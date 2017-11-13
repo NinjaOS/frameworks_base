@@ -28,6 +28,7 @@ import android.os.HandlerThread;
 import android.os.MemoryFile;
 import android.util.Log;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.util.Preconditions;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class AsyncSensorManager extends SensorManager {
     private final List<Sensor> mSensorCache;
     private final HandlerThread mHandlerThread = new HandlerThread("async_sensor");
     private final Handler mHandler;
+    @VisibleForTesting final Handler mHandler;
 
     public AsyncSensorManager(SensorManager inner) {
         mInner = inner;
@@ -151,5 +153,12 @@ public class AsyncSensorManager extends SensorManager {
     @Override
     protected void unregisterListenerImpl(SensorEventListener listener, Sensor sensor) {
         mHandler.post(() -> mInner.unregisterListener(listener, sensor));
+        mHandler.post(() -> {
+            if (sensor == null) {
+                mInner.unregisterListener(listener);
+            } else {
+                mInner.unregisterListener(listener, sensor);
+            }
+        });
     }
 }

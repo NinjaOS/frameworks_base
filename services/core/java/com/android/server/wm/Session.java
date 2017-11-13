@@ -166,6 +166,7 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public void binderDied() {
         // Note: it is safe to call in to the input method manager
         // here because we are not holding our lock.
@@ -212,6 +213,7 @@ public class Session extends IWindowSession.Stub
             outContentInsets, outStableInsets, null /* outOutsets */, null);
     }
 
+    @Override
     public void remove(IWindow window) {
         mService.removeWindow(this, window);
     }
@@ -221,6 +223,7 @@ public class Session extends IWindowSession.Stub
         mService.setWillReplaceWindows(appToken, childrenOnly);
     }
 
+    @Override
     public int relayout(IWindow window, int seq, WindowManager.LayoutParams attrs,
             int requestedWidth, int requestedHeight, int viewFlags,
             int flags, Rect outFrame, Rect outOverscanInsets, Rect outContentInsets,
@@ -239,42 +242,50 @@ public class Session extends IWindowSession.Stub
         return res;
     }
 
+    @Override
     public boolean outOfMemory(IWindow window) {
         return mService.outOfMemoryWindow(this, window);
     }
 
+    @Override
     public void setTransparentRegion(IWindow window, Region region) {
         mService.setTransparentRegionWindow(this, window, region);
     }
 
+    @Override
     public void setInsets(IWindow window, int touchableInsets,
             Rect contentInsets, Rect visibleInsets, Region touchableArea) {
         mService.setInsetsWindow(this, window, touchableInsets, contentInsets,
                 visibleInsets, touchableArea);
     }
 
+    @Override
     public void getDisplayFrame(IWindow window, Rect outDisplayFrame) {
         mService.getWindowDisplayFrame(this, window, outDisplayFrame);
     }
 
+    @Override
     public void finishDrawing(IWindow window) {
         if (WindowManagerService.localLOGV) Slog.v(
             TAG_WM, "IWindow finishDrawing called for " + window);
         mService.finishDrawingWindow(this, window);
     }
 
+    @Override
     public void setInTouchMode(boolean mode) {
         synchronized(mService.mWindowMap) {
             mService.mInTouchMode = mode;
         }
     }
 
+    @Override
     public boolean getInTouchMode() {
         synchronized(mService.mWindowMap) {
             return mService.mInTouchMode;
         }
     }
 
+    @Override
     public boolean performHapticFeedback(IWindow window, int effectId,
             boolean always) {
         synchronized(mService.mWindowMap) {
@@ -290,12 +301,14 @@ public class Session extends IWindowSession.Stub
     }
 
     /* Drag/drop */
+    @Override
     public IBinder prepareDrag(IWindow window, int flags,
             int width, int height, Surface outSurface) {
         return mService.prepareDragSurface(window, mSurfaceSession, flags,
                 width, height, outSurface);
     }
 
+    @Override
     public boolean performDrag(IWindow window, IBinder dragToken,
             int touchSource, float touchX, float touchY, float thumbCenterX, float thumbCenterY,
             ClipData data) {
@@ -379,6 +392,7 @@ public class Session extends IWindowSession.Stub
         return true;    // success!
     }
 
+    @Override
     public boolean startMovingTask(IWindow window, float startX, float startY) {
         if (DEBUG_TASK_POSITIONING) Slog.d(
                 TAG_WM, "startMovingTask: {" + startX + "," + startY + "}");
@@ -391,6 +405,7 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public void reportDropResult(IWindow window, boolean consumed) {
         IBinder token = window.asBinder();
         if (DEBUG_DRAG) {
@@ -431,6 +446,7 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public void cancelDragAndDrop(IBinder dragToken) {
         if (DEBUG_DRAG) {
             Slog.d(TAG_WM, "cancelDragAndDrop");
@@ -459,18 +475,21 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public void dragRecipientEntered(IWindow window) {
         if (DEBUG_DRAG) {
             Slog.d(TAG_WM, "Drag into new candidate view @ " + window.asBinder());
         }
     }
 
+    @Override
     public void dragRecipientExited(IWindow window) {
         if (DEBUG_DRAG) {
             Slog.d(TAG_WM, "Drag from old candidate view @ " + window.asBinder());
         }
     }
 
+    @Override
     public void setWallpaperPosition(IBinder window, float x, float y, float xStep, float yStep) {
         synchronized(mService.mWindowMap) {
             long ident = Binder.clearCallingIdentity();
@@ -484,12 +503,14 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public void wallpaperOffsetsComplete(IBinder window) {
         synchronized (mService.mWindowMap) {
             mService.mRoot.mWallpaperController.wallpaperOffsetsComplete(window);
         }
     }
 
+    @Override
     public void setWallpaperDisplayOffset(IBinder window, int x, int y) {
         synchronized(mService.mWindowMap) {
             long ident = Binder.clearCallingIdentity();
@@ -502,6 +523,7 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public Bundle sendWallpaperCommand(IBinder window, String action, int x, int y,
             int z, Bundle extras, boolean sync) {
         synchronized(mService.mWindowMap) {
@@ -516,12 +538,14 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public void wallpaperCommandComplete(IBinder window, Bundle result) {
         synchronized (mService.mWindowMap) {
             mService.mRoot.mWallpaperController.wallpaperCommandComplete(window);
         }
     }
 
+    @Override
     public void onRectangleOnScreenRequested(IBinder token, Rect rectangle) {
         synchronized(mService.mWindowMap) {
             final long identity = Binder.clearCallingIdentity();
@@ -533,6 +557,7 @@ public class Session extends IWindowSession.Stub
         }
     }
 
+    @Override
     public IWindowId getWindowId(IBinder window) {
         return mService.getWindowId(window);
     }
